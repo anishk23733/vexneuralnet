@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/fonts.css">
+    <script src="./js/classie.js"></script>
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Match Predictor</a></li>
+            <li><a href="tournament-matches.html" class="current">Tournament Matches</a></li>
+            <li><a href="">Team Analysis</a></li>
+        </ul>
+    </nav>
+
+    <section class="match-predictor">
+
+        <h1 id="title">Tournament Matches</h1>
+
+        <div class="blueContainer">
+            <span class="input input--haruki">
+                <input class="input__field input__field--haruki" type="text" id="red1" />
+                <label class="input__label input__label--haruki" for="red1">
+                    <span class="input__label-content
+                    input__label-content--haruki">SKU</span>
+                </label>
+            </span>
+
+            <button class="btn btn-bottom">Predict</button>
+        </div>
+
+    </section>
+
+
+
+
+    <script src="./network/matches.js"></script>
+
+    <script>
+        let main = async (red1, red2, blue1, blue2) => {
+            let net = loadModel();
+            let prediction = await processMatch(net, red1, red2, blue1, blue2);
+
+            let redPercent = ((prediction.red / (prediction.red + prediction.blue)) * 100).toFixed(2);
+            let bluePercent = ((prediction.blue / (prediction.red + prediction.blue)) * 100).toFixed(2);
+            document.querySelector(".redChance").innerText = redPercent + "%";
+            document.querySelector(".blueChance").innerText = bluePercent + "%";
+            if (redPercent > bluePercent) {
+                document.querySelector(".red").style.flexGrow = "2";
+            } else if (bluePercent > redPercent) {
+                document.querySelector(".blue").style.flexGrow = "2";
+            }
+        }
+
+
+        const btn = document.querySelector('.btn');
+
+        btn.addEventListener('click', (e) => {
+            document.querySelector(".red").style.flexGrow = "1";
+            document.querySelector(".blue").style.flexGrow = "1";
+
+            let red1 = document.getElementById("red1").value;
+            let red2 = document.getElementById("red2").value;
+            let blue1 = document.getElementById("blue1").value;
+            let blue2 = document.getElementById("blue2").value;
+
+            main(red1, red2, blue1, blue2);
+        })
+
+        btn.addEventListener('mousemove', (e) => {
+            const sensitivity = 30;
+            const {
+                offsetX,
+                offsetY
+            } = e;
+            const {
+                offsetHeight,
+                offsetWidth
+            } = e.target;
+
+            const y = -((offsetX / offsetWidth) - 0.5) * sensitivity;
+            const x = ((offsetY / offsetHeight) - 0.5) * sensitivity;
+
+            btn.style.transform = `rotateX(${x}deg) rotateY(${y}deg) rotateZ(0) scale(1.2)`;
+        });
+
+        btn.addEventListener('mouseout', () => {
+            btn.style.transform = "scale(1.0) rotateX(0) rotateY(0)";
+        });
+    </script>
+
+
+    <script>
+        (function () {
+            // trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+            if (!String.prototype.trim) {
+                (function () {
+                    // Make sure we trim BOM and NBSP
+                    var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+                    String.prototype.trim = function () {
+                        return this.replace(rtrim, '');
+                    };
+                })();
+            }
+
+            [].slice.call(document.querySelectorAll('input.input__field')).forEach(function (inputEl) {
+                // in case the input is already filled..
+                if (inputEl.value.trim() !== '') {
+                    classie.add(inputEl.parentNode, 'input--filled');
+                }
+
+                // events:
+                inputEl.addEventListener('focus', onInputFocus);
+                inputEl.addEventListener('blur', onInputBlur);
+            });
+
+            function onInputFocus(ev) {
+                classie.add(ev.target.parentNode, 'input--filled');
+            }
+
+            function onInputBlur(ev) {
+                if (ev.target.value.trim() === '') {
+                    classie.remove(ev.target.parentNode, 'input--filled');
+                }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>
