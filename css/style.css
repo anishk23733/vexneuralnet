@@ -45,9 +45,9 @@ nav ul li a.current {
 }
 
 .btn-bottom {
-    position: absolute;
-    bottom: 10%;
-    left: 44%;
+    position: relative;
+    display: block;
+    margin: 0 auto;
 }
 
 .btn {
@@ -104,6 +104,18 @@ nav ul li a.current {
     width: 80%;
     height: 70vh;
     margin: 0 auto;
+    padding: 2rem;
+    /* display: flex; */
+    /* justify-content: center; */
+    border-radius: 10%;
+}
+
+#dropdown {
+    display: block;
+    margin: 1rem auto;
+    background-color: #fff;
+    border: 6px solid transparent;
+    color: dodgerblue;
 }
 
 .blue {
@@ -111,7 +123,11 @@ nav ul li a.current {
     border-top-right-radius: 5%;
     border-bottom-right-radius: 5%;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%);
+}
 
+#spanMatchNum,
+#spanTeamNum {
+    display: none;
 }
 
 .title {
@@ -252,8 +268,26 @@ nav ul li a.current {
     transform: translate3d(0, 0.5em, 0);
 }
 
+
 .match-predictor {
     display: flex;
     flex-direction: column;
     text-align: center;
+}
+
+.prediction-results {
+    width: 80%;
+    margin: 0 auto;
+    padding: 2rem;
+    display: none;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+}
+
+#status {
+    color: #fff;
+    padding: 2rem;
 }
