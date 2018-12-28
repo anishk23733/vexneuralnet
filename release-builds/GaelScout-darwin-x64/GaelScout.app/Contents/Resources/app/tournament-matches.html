@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/fonts.css">
+    <script src="./js/classie.js"></script>
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Match Predictor</a></li>
+            <li><a href="tournament-matches.html" class="current">Tournament Matches</a></li>
+            <li><a href="">Team Analysis</a></li>
+        </ul>
+    </nav>
+
+    <section class="match-predictor">
+
+        <h1 id="title">Tournament Matches</h1>
+
+        <div class="blueContainer">
+            <span class="input input--haruki">
+                <input class="input__field input__field--haruki" type="text" id="sku" />
+                <label class="input__label input__label--haruki" for="sku">
+                    <span class="input__label-content
+                    input__label-content--haruki">SKU</span>
+                </label>
+            </span>
+
+            <select name="options" id="dropdown">
+                <option value="allMatches">All Matches</option>
+                <option value="oneMatch">Specific Match</option>
+                <option value="oneTeam">Specific Team</option>
+                <option value="rankings">Rankings</option>
+            </select>
+
+            <span class="input input--haruki" id="spanMatchNum">
+                <input class="input__field input__field--haruki" type="text" id="matchNum" />
+                <label class="input__label input__label--haruki" for="matchNum">
+                    <span class="input__label-content
+                    input__label-content--haruki">Match Number</span>
+                </label>
+            </span>
+
+            <span class="input input--haruki" id="spanTeamNum">
+                <input class="input__field input__field--haruki" type="text" id="teamNum" />
+                <label class="input__label input__label--haruki" for="teamNum">
+                    <span class="input__label-content
+                    input__label-content--haruki">Team Number</span>
+                </label>
+            </span>
+
+            <button class="btn btn-bottom">Predict</button>
+            <div id="status"></div>
+        </div>
+
+    </section>
+
+    <section class="prediction-results">
+        <h1 id="prediction-title">Prediction Results</h1>
+        <table>
+            <thead>
+                <th>Match Number</th>
+                <th>Red 1</th>
+                <th>Red 2</th>
+                <th>Red Probability</th>
+                <th>Blue 1</th>
+                <th>Blue 2</th>
+                <th>Blue Probability</th>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </section>
+
+    <section class="rankings">
+        <h1>Predicted Rankings</h1>
+        <table>
+            <thead>
+                <th>Rank</th>
+                <th>Team Number</th>
+                <th>Wins</th>
+                <th>Losses</th>
+            </thead>
+            <tbody id="rankingsTable">
+
+            </tbody>
+        </table>
+    </section>
+
+
+    <script src="./network/matches.js"></script>
+
+    <script>
+        let main = async (red1, red2, blue1, blue2) => {
+            let net = loadModel();
+            let prediction = await processMatch(net, red1, red2, blue1, blue2);
+        }
+
+
+        const btn = document.querySelector('.btn');
+        var a = document.getElementById('dropdown');
+
+        let getAllMatchesResults = async () => {
+            let sku = document.getElementById("sku").value;
+            let results = await processTournament(sku);
+            console.log(results);
+            for (let i in results) {
+                let color;
+                let redColor;
+                let blueColor;
+                if (results[i][5].red > results[i][5].blue) {
+                    color = 'style="color:#fff; background-color:red"';
+                    redColor = 'style="color:#fff; background-color:#7CFC00"';
+                } else if (results[i][5].red < results[i][5].blue) {
+                    color = 'style="color:#fff; background-color:blue"';
+                    blueColor = 'style="color:#fff; background-color:#7CFC00 "';
+                }
+                document.querySelector('tbody').insertAdjacentHTML('beforeend',
+                    `<tr>
+<td ${color}>${results[i][0]}</td>
+<td ${redColor}>${results[i][1]}</td>
+<td ${redColor}>${results[i][2]}</td>
+<td>${((results[i][5].red / (results[i][5].red+results[i][5].blue)) * 100).toFixed(2)}%</td>
+<td ${blueColor}>${results[i][3]}</td>
+<td ${blueColor}>${results[i][4]}</td>
+<td>${((results[i][5].blue / (results[i][5].red+results[i][5].blue)) * 100).toFixed(2)}%</td>`
+                )
+            }
+        }
+        let getTeamMatchResults = async () => {
+            let sku = document.getElementById("sku").value;
+            let team = document.getElementById("teamNum").value;
+            let results = await processTeamMatches(sku, team);
+            document.querySelector('#prediction-title').innerHTML =
+                `Prediction Results, ${results[1]} / ${results[2]}`;
+
+            for (let i in results[0]) {
+                let color;
+                let redColor;
+                let blueColor;
+                if (results[0][i][5].red > results[0][i][5].blue) {
+                    color = 'style="color:#fff; background-color:red"';
+                    redColor = 'style="color:#fff; background-color:#7CFC00"';
+                } else if (results[0][i][5].red < results[0][i][5].blue) {
+                    color = 'style="color:#fff; background-color:blue"';
+                    blueColor = 'style="color:#fff; background-color:#7CFC00 "';
+                }
+                document.querySelector('tbody').insertAdjacentHTML('beforeend',
+                    `<tr>
+<td ${color}>${results[0][i][0]}</td>
+<td ${redColor}>${results[0][i][1]}</td>
+<td ${redColor}>${results[0][i][2]}</td>
+<td>${((results[0][i][5].red / (results[0][i][5].red+results[0][i][5].blue)) * 100).toFixed(2)}%</td>
+<td ${blueColor}>${results[0][i][3]}</td>
+<td ${blueColor}>${results[0][i][4]}</td>
+<td>${((results[0][i][5].blue / (results[0][i][5].red+results[0][i][5].blue)) * 100).toFixed(2)}%</td>`
+                )
+            }
+        }
+
+        let getSpecificMatchResult = async () => {
+            let sku = document.getElementById("sku").value;
+            let matchNum = document.getElementById("matchNum").value;
+            let results = await processTournamentMatch(sku, matchNum);
+            let color;
+            let redColor;
+            let blueColor;
+            if (results[5].red > results[5].blue) {
+                color = 'style="color:#fff; background-color:red"';
+                redColor = 'style="color:#fff; background-color:#7CFC00"';
+            } else if (results[5].red < results[5].blue) {
+                color = 'style="color:#fff; background-color:blue"';
+                blueColor = 'style="color:#fff; background-color:#7CFC00 "';
+            }
+
+            document.querySelector('tbody').insertAdjacentHTML('beforeend',
+                `<tr>
+    <td ${color}>${results[0]}</td>
+    <td ${redColor}>${results[1]}</td>
+    <td ${redColor}>${results[2]}</td>
+    <td>${((results[5].red / (results[5].red+results[5].blue)) * 100).toFixed(2)}%</td>
+    <td ${blueColor}>${results[3]}</td>
+    <td ${blueColor}>${results[4]}</td>
+    <td>${((results[5].blue / (results[5].red+results[5].blue)) * 100).toFixed(2)}%</td>`
+            )
+        }
+
+        btn.addEventListener('click', (e) => {
+            document.querySelector('#prediction-title').innerHTML =
+                `Prediction Results`;
+            document.querySelector('tbody').innerHTML = '';
+            if (a.value == "allMatches") {
+                document.querySelector('.prediction-results').style.display = "block";
+                document.querySelector('.rankings').style.display = "none";
+                getAllMatchesResults();
+            } else if (a.value == "oneMatch") {
+                document.querySelector('.prediction-results').style.display = "block";
+                document.querySelector('.rankings').style.display = "none";
+                getSpecificMatchResult();
+            } else if (a.value == "oneTeam") {
+                document.querySelector('.prediction-results').style.display = "block";
+                document.querySelector('.rankings').style.display = "none";
+                getTeamMatchResults();
+            } else if (a.value == "rankings") {
+                document.querySelector('.rankings').style.display = "block";
+                document.querySelector('.prediction-results').style.display = "none";
+                let sku = document.getElementById("sku").value;
+                processRanking(sku);
+            }
+        })
+
+        a.addEventListener('change', function () {
+            if (this.value == "allMatches") {
+                document.getElementById("spanMatchNum").style.display = "none";
+                document.getElementById("spanTeamNum").style.display = "none";
+            } else if (this.value == "oneMatch") {
+                document.getElementById("spanMatchNum").style.display = "inline-block";
+                document.getElementById("spanTeamNum").style.display = "none";
+            } else if (this.value == "oneTeam") {
+                document.getElementById("spanTeamNum").style.display = "inline-block";
+                document.getElementById("spanMatchNum").style.display = "none";
+            } else if (this.value == "rankings") {
+                document.getElementById("spanTeamNum").style.display = "none";
+                document.getElementById("spanMatchNum").style.display = "none";
+            }
+        }, false);
+
+        // addContainer.innerHTML = option[0].value;
+        // Button animation code
+        btn.addEventListener('mousemove', (e) => {
+            const sensitivity = 30;
+            const {
+                offsetX,
+                offsetY
+            } = e;
+            const {
+                offsetHeight,
+                offsetWidth
+            } = e.target;
+
+            const y = -((offsetX / offsetWidth) - 0.5) * sensitivity;
+            const x = ((offsetY / offsetHeight) - 0.5) * sensitivity;
+
+            btn.style.transform =
+                `
+                                rotateX($ {
+                                        x
+                                    }
+                                    deg) rotateY($ {
+                                        y
+                                    }
+                                    deg) rotateZ(0) scale(1.2)
+                                `;
+        });
+
+        btn.addEventListener('mouseout', () => {
+            btn.style.transform = "scale(1.0) rotateX(0) rotateY(0)";
+        });
+    </script>
+
+
+    <script>
+        (function () {
+            // trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+            if (!String.prototype.trim) {
+                (function () {
+                    // Make sure we trim BOM and NBSP
+                    var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+                    String.prototype.trim = function () {
+                        return this.replace(rtrim, '');
+                    };
+                })();
+            }
+
+            [].slice.call(document.querySelectorAll('input.input__field')).forEach(function (inputEl) {
+                // in case the input is already filled..
+                if (inputEl.value.trim() !== '') {
+                    classie.add(inputEl.parentNode, 'input--filled');
+                }
+
+                // events:
+                inputEl.addEventListener('focus', onInputFocus);
+                inputEl.addEventListener('blur', onInputBlur);
+            });
+
+            function onInputFocus(ev) {
+                classie.add(ev.target.parentNode, 'input--filled');
+            }
+
+            function onInputBlur(ev) {
+                if (ev.target.value.trim() === '') {
+                    classie.remove(ev.target.parentNode, 'input--filled');
+                }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

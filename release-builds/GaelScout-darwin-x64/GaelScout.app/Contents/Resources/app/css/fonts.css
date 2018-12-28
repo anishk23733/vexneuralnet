@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'Noe Display';
+    src: url(./fonts/Noe_Display/noe-display-regular.ttf);
+}
+
+@font-face {
+    font-family: 'Noe Display';
+    src: url(./fonts/Noe_Display/noe-display-bold.ttf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'SF Compact';
+    src: url(./fonts/SF_Compact/SFCompactText-Light.otf);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'SF Compact';
+    src: url(./fonts/SF_Compact/SFCompactText-Regular.otf);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'SF Compact';
+    src: url(./fonts/SF_Compact/SFCompactText-Medium.otf);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'SF Compact';
+    src: url(./fonts/SF_Compact/SFCompactText-Semibold.otf);
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'SF Compact';
+    src: url(./fonts/SF_Compact/SFCompactText-Bold.otf);
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'SF Compact';
+    src: url(./fonts/SF_Compact/SFCompactText-Heavy.otf);
+    font-weight: 800;
+}

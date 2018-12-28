@@ -3,7 +3,14 @@ const {
 	BrowserWindow
 } = require("electron");
 const electron = require("electron");
-const path = require('path');
+const path = require("path");
+const Menu = require('electron').Menu
+
+// MAC
+// electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds
+
+// WINDOWS
+// electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName=GaelForceRobotics --version-string.FileDescription=0.1 --version-string.ProductName="GaelScout"
 
 function createWindow() {
 	const {
@@ -16,12 +23,12 @@ function createWindow() {
 		height,
 		titleBarStyle: "hiddenInset",
 		resizable: false,
-		icon: path.join(__dirname, 'assets/icons/icon_256x256.png')
+		icon: path.join(__dirname, "assets/icons/icon_256x256.png")
 	});
 
 	// and load the index.html of the app.
 	win.loadFile("index.html");
-	win.webContents.openDevTools();
+	// win.webContents.openDevTools();
 
 	win.on("closed", () => {
 		// Dereference the window object, usually you would store windows
@@ -31,7 +38,77 @@ function createWindow() {
 	});
 }
 
-app.on("ready", createWindow);
+function createMenu() {
+	const application = {
+		label: "Application",
+		submenu: [{
+				label: "About Application",
+				selector: "orderFrontStandardAboutPanel:"
+			},
+			{
+				type: "separator"
+			},
+			{
+				label: "Quit",
+				accelerator: "Command+Q",
+				click: () => {
+					app.quit()
+				}
+			}
+		]
+	}
+
+	const edit = {
+		label: "Edit",
+		submenu: [{
+				label: "Undo",
+				accelerator: "CmdOrCtrl+Z",
+				selector: "undo:"
+			},
+			{
+				label: "Redo",
+				accelerator: "Shift+CmdOrCtrl+Z",
+				selector: "redo:"
+			},
+			{
+				type: "separator"
+			},
+			{
+				label: "Cut",
+				accelerator: "CmdOrCtrl+X",
+				selector: "cut:"
+			},
+			{
+				label: "Copy",
+				accelerator: "CmdOrCtrl+C",
+				selector: "copy:"
+			},
+			{
+				label: "Paste",
+				accelerator: "CmdOrCtrl+V",
+				selector: "paste:"
+			},
+			{
+				label: "Select All",
+				accelerator: "CmdOrCtrl+A",
+				selector: "selectAll:"
+			}
+		]
+	}
+
+	const template = [
+		application,
+		edit
+	]
+
+	Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}
+
+
+app.on("ready", () => {
+	createWindow()
+	createMenu()
+});
 
 app.on("window-all-closed", () => {
 	// On macOS it is common for applications and their menu bar
