@@ -6,7 +6,7 @@ It is currently supported on macOS. It serves five main purposes:
 
 1. **Predict match outcomes.**
    GaelScout uses a neural network to predict the outcome of a match based on
-   the vratings of each team in a match. It uses the [VexDB API](https://vexdb.io/the_data) to collect this information and process matches.The neural network was trained
+   the vratings of each team in a match. It uses the [VexDB API](https://vexdb.io/the_data) to collect this information and process matches. The neural network was trained
    with 2000 matches using the VexDB API.
 
 2. **Predict match outcomes for all matches in a tournament.**
