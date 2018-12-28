@@ -3,6 +3,7 @@ const {
 	BrowserWindow
 } = require("electron");
 const electron = require("electron");
+const path = require('path');
 
 function createWindow() {
 	const {
@@ -14,7 +15,8 @@ function createWindow() {
 		width,
 		height,
 		titleBarStyle: "hiddenInset",
-		resizable: false
+		resizable: false,
+		icon: path.join(__dirname, 'assets/icons/icon_256x256.png')
 	});
 
 	// and load the index.html of the app.
