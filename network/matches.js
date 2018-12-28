@@ -299,6 +299,58 @@ let processTournament = async (sku) => {
 	}
 	return null;
 }
+let processRanking = async (sku) => {
+	document.getElementById("rankingsTable").innerHTML = '';
+
+	let data;
+	let net = await loadModel();
+	let teamData = await axios(`https://api.vexdb.io/v1/get_teams?sku=${sku}`);
+	let wins = {};
+	let losses = {};
+	for (let i in teamData.data.result) {
+		wins[teamData.data.result[i].number] = 0;
+		losses[teamData.data.result[i].number] = 0;
+	}
+	// for (let i in teamData.data.results)
+	console.log(teamData)
+	data = await axios(`https://api.vexdb.io/v1/get_matches?sku=${sku}`);
+	if (data.data.result != null) {
+		let prediction;
+		for (let i in data.data.result) {
+			let j = parseInt(i) + 1;
+			prediction = await processMatch(net, data.data.result[i].red1, data.data.result[i].red2, data.data.result[i].blue1, data.data.result[i].blue2, false);
+			document.getElementById("status").innerText = `Processing ${j} of ${data.data.result.length} matches...`;
+			if (prediction.red > prediction.blue) {
+				wins[data.data.result[i].red1]++;
+				wins[data.data.result[i].red2]++;
+				losses[data.data.result[i].blue1]++;
+				losses[data.data.result[i].blue2]++;
+			} else if (prediction.red < prediction.blue) {
+				wins[data.data.result[i].blue1]++;
+				wins[data.data.result[i].blue2]++;
+				losses[data.data.result[i].red1]++;
+				losses[data.data.result[i].red2]++;
+			}
+		}
+
+		var sortable = [];
+		for (var team in wins) {
+			sortable.push([team, wins[team]]);
+		}
+		sortable.sort(function (a, b) {
+			return b[1] - a[1];
+		});
+
+		for (let i in sortable) {
+			document.getElementById("rankingsTable").insertAdjacentHTML('beforeend', `<tr><td>${parseInt(i)+1}</td><td>${sortable[i][0]}</td><td>${wins[sortable[i][0]]}</td><td>${losses[sortable[i][0]]}</td></tr>`)
+		}
+		console.log(sortable);
+		console.log(wins);
+		console.log(losses);
+		document.getElementById("status").innerText = ``;
+	}
+	return null;
+}
 let processTeamMatches = async (sku, team) => {
 	let data;
 	let net = await loadModel();

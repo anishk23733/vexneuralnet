@@ -282,6 +282,13 @@ nav ul li a.current {
     display: none;
 }
 
+.rankings {
+    width: 80%;
+    margin: 0 auto;
+    padding: 2rem;
+    display: none;
+}
+
 table {
     width: 100%;
     text-align: center;

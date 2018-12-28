@@ -41,6 +41,7 @@
                 <option value="allMatches">All Matches</option>
                 <option value="oneMatch">Specific Match</option>
                 <option value="oneTeam">Specific Team</option>
+                <option value="rankings">Rankings</option>
             </select>
 
             <span class="input input--haruki" id="spanMatchNum">
@@ -78,6 +79,21 @@
                 <th>Blue Probability</th>
             </thead>
             <tbody>
+
+            </tbody>
+        </table>
+    </section>
+
+    <section class="rankings">
+        <h1>Predicted Rankings</h1>
+        <table>
+            <thead>
+                <th>Rank</th>
+                <th>Team Number</th>
+                <th>Wins</th>
+                <th>Losses</th>
+            </thead>
+            <tbody id="rankingsTable">
 
             </tbody>
         </table>
@@ -184,15 +200,24 @@
         btn.addEventListener('click', (e) => {
             document.querySelector('#prediction-title').innerHTML =
                 `Prediction Results`;
-
-            document.querySelector('.prediction-results').style.display = "block";
             document.querySelector('tbody').innerHTML = '';
             if (a.value == "allMatches") {
+                document.querySelector('.prediction-results').style.display = "block";
+                document.querySelector('.rankings').style.display = "none";
                 getAllMatchesResults();
             } else if (a.value == "oneMatch") {
+                document.querySelector('.prediction-results').style.display = "block";
+                document.querySelector('.rankings').style.display = "none";
                 getSpecificMatchResult();
             } else if (a.value == "oneTeam") {
+                document.querySelector('.prediction-results').style.display = "block";
+                document.querySelector('.rankings').style.display = "none";
                 getTeamMatchResults();
+            } else if (a.value == "rankings") {
+                document.querySelector('.rankings').style.display = "block";
+                document.querySelector('.prediction-results').style.display = "none";
+                let sku = document.getElementById("sku").value;
+                processRanking(sku);
             }
         })
 
@@ -205,6 +230,9 @@
                 document.getElementById("spanTeamNum").style.display = "none";
             } else if (this.value == "oneTeam") {
                 document.getElementById("spanTeamNum").style.display = "inline-block";
+                document.getElementById("spanMatchNum").style.display = "none";
+            } else if (this.value == "rankings") {
+                document.getElementById("spanTeamNum").style.display = "none";
                 document.getElementById("spanMatchNum").style.display = "none";
             }
         }, false);
