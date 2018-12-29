@@ -20,7 +20,7 @@
         <ul>
             <li><a href="index.html">Match Predictor</a></li>
             <li><a href="tournament-matches.html" class="current">Tournament Matches</a></li>
-            <li><a href="">Team Analysis</a></li>
+            <li><a href="team-analyzer.html">Team Analysis</a></li>
         </ul>
     </nav>
 
@@ -99,8 +99,10 @@
         </table>
     </section>
 
+    <div class="credits"><a id="creditLink">Coded by Anish Kachinthaya</a></div>
 
     <script src="./network/matches.js"></script>
+    <script src="./js/index.js"></script>
 
     <script>
         let main = async (red1, red2, blue1, blue2) => {
@@ -198,6 +200,16 @@
         }
 
         btn.addEventListener('click', (e) => {
+            mainEventListener()
+        })
+        document.addEventListener('keypress', function (e) {
+            var key = e.which || e.keyCode;
+            if (key === 13) { // 13 is enter
+                mainEventListener()
+            }
+        });
+
+        let mainEventListener = () => {
             document.querySelector('#prediction-title').innerHTML =
                 `Prediction Results`;
             document.querySelector('tbody').innerHTML = '';
@@ -219,7 +231,7 @@
                 let sku = document.getElementById("sku").value;
                 processRanking(sku);
             }
-        })
+        }
 
         a.addEventListener('change', function () {
             if (this.value == "allMatches") {

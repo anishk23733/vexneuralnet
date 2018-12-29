@@ -33,5 +33,5 @@ It is currently supported on macOS. It serves five main purposes:
 -   [x] Predict specific tournament match
 -   [x] Predict tournament matches for a specific team
 -   [x] Predict tournament rankings
--   [ ] Display statistics of a specific team and visualize data
+-   [x] Display statistics of a specific team and visualize data
 -   [ ] Implement accuracy test

@@ -17,7 +17,7 @@
         <ul>
             <li><a href="index.html" class="current">Match Predictor</a></li>
             <li><a href="tournament-matches.html">Tournament Matches</a></li>
-            <li><a href="">Team Analysis</a></li>
+            <li><a href="team-analyzer.html">Team Analysis</a></li>
         </ul>
     </nav>
 
@@ -71,7 +71,7 @@
     </section>
 
 
-
+    <div class="credits"><a id="creditLink">Coded by Anish Kachinthaya</a></div>
 
     <script src="./network/matches.js"></script>
 
@@ -95,6 +95,16 @@
         const btn = document.querySelector('.btn');
 
         btn.addEventListener('click', (e) => {
+            mainEventListenerFunction();
+        })
+        document.addEventListener('keypress', function (e) {
+            var key = e.which || e.keyCode;
+            if (key === 13) { // 13 is enter
+                mainEventListenerFunction();
+            }
+        });
+
+        let mainEventListenerFunction = () => {
             document.querySelector(".red").style.flexGrow = "1";
             document.querySelector(".blue").style.flexGrow = "1";
 
@@ -104,7 +114,8 @@
             let blue2 = document.getElementById("blue2").value;
 
             main(red1, red2, blue1, blue2);
-        })
+
+        }
 
         btn.addEventListener('mousemove', (e) => {
             const sensitivity = 30;

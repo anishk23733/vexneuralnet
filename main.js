@@ -1,22 +1,16 @@
-const {
-	app,
-	BrowserWindow
-} = require("electron");
+const { app, BrowserWindow } = require("electron");
 const electron = require("electron");
 const path = require("path");
-const Menu = require('electron').Menu
+const Menu = require("electron").Menu;
 
 // MAC
 // electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds
 
 // WINDOWS
-// electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName=GaelForceRobotics --version-string.FileDescription=0.1 --version-string.ProductName="GaelScout"
+// electron-packager . GaelScout --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName=GaelForceRobotics --version-string.FileDescription=0.1 --version-string.ProductName="GaelScout"
 
 function createWindow() {
-	const {
-		width,
-		height
-	} = electron.screen.getPrimaryDisplay().workAreaSize;
+	const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
 	// Create the browser window.
 	win = new BrowserWindow({
 		width,
@@ -41,7 +35,8 @@ function createWindow() {
 function createMenu() {
 	const application = {
 		label: "Application",
-		submenu: [{
+		submenu: [
+			{
 				label: "About Application",
 				selector: "orderFrontStandardAboutPanel:"
 			},
@@ -52,15 +47,16 @@ function createMenu() {
 				label: "Quit",
 				accelerator: "Command+Q",
 				click: () => {
-					app.quit()
+					app.quit();
 				}
 			}
 		]
-	}
+	};
 
 	const edit = {
 		label: "Edit",
-		submenu: [{
+		submenu: [
+			{
 				label: "Undo",
 				accelerator: "CmdOrCtrl+Z",
 				selector: "undo:"
@@ -94,20 +90,16 @@ function createMenu() {
 				selector: "selectAll:"
 			}
 		]
-	}
+	};
 
-	const template = [
-		application,
-		edit
-	]
+	const template = [application, edit];
 
-	Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+	Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
-
 app.on("ready", () => {
-	createWindow()
-	createMenu()
+	createWindow();
+	createMenu();
 });
 
 app.on("window-all-closed", () => {
