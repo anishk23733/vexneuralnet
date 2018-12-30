@@ -28,7 +28,7 @@ function createWindow() {
 
 	// and load the index.html of the app.
 	win.loadFile("index.html");
-	win.webContents.openDevTools();
+	// win.webContents.openDevTools();
 
 	win.on("closed", () => {
 		// Dereference the window object, usually you would store windows

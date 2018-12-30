@@ -1,5 +1,4 @@
 document.getElementById("spanTeamNumber").style.display = "none";
-console.log("hi")
 let a = document.getElementById('dropdown');
 
 a.addEventListener('change', function () {

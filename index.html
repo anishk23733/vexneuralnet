@@ -8,72 +8,72 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/fonts.css">
+
+    <!-- EXTERNAL LIBRARY FIXER -->
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="./js/jquery.smoothState.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+        crossorigin="anonymous">
+    <script>
+        if (window.module) module = window.module;
+    </script>
 </head>
 
 <body>
-    <nav>
-        <ul>
-            <li><a href="index.html" class="current">Match Predictor</a></li>
-            <li><a href="tournament-matches.html">Tournament Matches</a></li>
-            <li><a href="team-analyzer.html">Team Analysis</a></li>
-            <li><a href="accuracytest.html">Accuracy Test</a></li>
-        </ul>
-    </nav>
+    <div class="navigation">
+        <a href="index.html">
+            <div class="home"><i class="fas fa-home home-icon"></i></div>
+        </a>
+        <nav id="nav">
+            <ul>
+                <li><a href="match-predictor.html">Match Predictor</a></li>
+                <li><a href="tournament-matches.html">Tournament Matches</a></li>
+                <li><a href="team-analyzer.html">Team Analysis</a></li>
+                <li><a href="accuracytest.html">Accuracy Test</a></li>
+            </ul>
+        </nav>
+    </div>
 
-
-    <section class="match-predictor">
-
-        <h1 id="title">Match Predictor</h1>
-
-        <div class="container">
-
-            <div class="red">
-                <h1 class="title">Red Alliance <span class="redChance"></span>
-                </h1>
-
-                <span class="input input--haruki">
-                    <input class="input__field input__field--haruki" type="text" id="red1" />
-                    <label class="input__label input__label--haruki" for="red1">
-                        <span class="input__label-content
-                    input__label-content--haruki">Red
-                            1</span>
-                    </label>
-                </span>
-                <span class="input input--haruki">
-                    <input class="input__field input__field--haruki" type="text" id="red2" />
-                    <label class="input__label input__label--haruki" for="red2">
-                        <span class="input__label-content
-                    input__label-content--haruki">Red
-                            2</span>
-                    </label>
-                </span>
+    <section>
+        <div class="introduction">
+            <img src="./assets/img/wallpaper.png" class="intro-image">
+            <div class="title-main">
+                <h1 class="main-title">Welcome to GaelScout</h1>
+            </div>
+            <div class="introduction-container">
+                <span class="intro-text"><i class="fas fa-brain"></i> Built on
+                    Neural Networks</span>
+                <div>GaelScout uses previous records of teams and processes them
+                    with cutting edge algorithms to make predictions. The model used for its
+                    network runs on two thousand matches from the Turning Point
+                    season. This makes its match prediction results
+                    80% accurate on average—effective considering that matches do not always have systematic
+                    outcomes.</div>
+            </div>
+            <div class="introduction-container">
+                <span class="intro-text"><i class="fas fa-robot"></i> Predicts
+                    based on live data</span>
+                <div>When making predictions, GaelScout uses the VexDB API to
+                    pull live data and use this data to make predictions. This
+                    ensures utmost accuracy in prediction results.</div>
+            </div>
+            <div class="introduction-container">
+                <span class="intro-text"><i class="fas fa-code-branch"></i>
+                    Open Source</span>
+                <div>GaelScout is fully open source and can be found on GitHub.
+                    This enables other teams to make use of Gael Force Robotics'
+                    tools in competitions.</div>
             </div>
 
-            <div class="blue">
-                <h1 class="title">Blue Alliance <span class="blueChance"></span>
-                </h1>
-
-                <span class="input input--haruki">
-                    <input class="input__field input__field--haruki" type="text" id="blue1" />
-                    <label class="input__label input__label--haruki" for="blue1">
-                        <span class="input__label-content
-                    input__label-content--haruki">Blue
-                            1</span>
-                    </label>
-                </span>
-                <span class="input input--haruki">
-                    <input class="input__field input__field--haruki" type="text" id="blue2" />
-                    <label class="input__label input__label--haruki" for="blue2">
-                        <span class="input__label-content
-                    input__label-content--haruki">Blue
-                            2</span>
-                    </label>
-                </span>
-            </div>
-            <button class="btn btn-fixed">Predict</button>
         </div>
     </section>
-
 
     <div class="credits"><a id="creditLink">Coded by Anish Kachinthaya</a></div>
 
@@ -81,46 +81,6 @@
     <script src="./network/matches.js"></script>
     <script src="./js/predictBtn.js"></script>
     <script src="./js/inputField.js"></script>
-
-    <script>
-        let main = async (red1, red2, blue1, blue2) => {
-            let net = loadModel();
-            let prediction = await processMatch(net, red1, red2, blue1, blue2);
-
-            let redPercent = ((prediction.red / (prediction.red + prediction.blue)) * 100).toFixed(2);
-            let bluePercent = ((prediction.blue / (prediction.red + prediction.blue)) * 100).toFixed(2);
-            document.querySelector(".redChance").innerText = redPercent + "%";
-            document.querySelector(".blueChance").innerText = bluePercent + "%";
-            if (redPercent > bluePercent) {
-                document.querySelector(".red").style.flexGrow = "2";
-            } else if (bluePercent > redPercent) {
-                document.querySelector(".blue").style.flexGrow = "2";
-            }
-        }
-
-        let mainEventListenerFunction = () => {
-            document.querySelector(".red").style.flexGrow = "1";
-            document.querySelector(".blue").style.flexGrow = "1";
-
-            let red1 = document.getElementById("red1").value;
-            let red2 = document.getElementById("red2").value;
-            let blue1 = document.getElementById("blue1").value;
-            let blue2 = document.getElementById("blue2").value;
-
-            main(red1, red2, blue1, blue2);
-        }
-
-        btn.addEventListener('click', (e) => {
-            mainEventListenerFunction();
-        })
-        document.addEventListener('keypress', function (e) {
-            var key = e.which || e.keyCode;
-            if (key === 13) { // 13 is enter
-                mainEventListenerFunction();
-            }
-        });
-    </script>
-
 </body>
 
 </html>
