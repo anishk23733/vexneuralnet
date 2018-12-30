@@ -30,7 +30,7 @@ It is currently supported on macOS. It serves five main purposes:
 
 GaelScout can be downloaded [here](https://bit.ly/GaelScoutDownloads).
 
-### Todos
+## Todos
 
 -   [x] Predict match between two alliances
 -   [x] Predict all tournament matches
