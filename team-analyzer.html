@@ -8,8 +8,8 @@
 	<title>Document</title>
 	<link rel="stylesheet" href="./css/style.css" />
 	<link rel="stylesheet" href="./css/fonts.css" />
-	<script src="./js/classie.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/barba.js/1.0.0/barba.min.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -22,6 +22,7 @@
 			<li>
 				<a href="team-analyzer.html" class="current">Team Analysis</a>
 			</li>
+			<li><a href="accuracytest.html">Accuracy Test</a></li>
 		</ul>
 	</nav>
 
@@ -35,8 +36,7 @@
 				<span class="input input--haruki">
 					<input class="input-inline input__field input__field--haruki" type="text" id="teamNum" />
 					<label class="input__label input__label--haruki" for="teamNum">
-						<span class="input__label-content
-input__label-content--haruki">Team Number</span>
+						<span class="input__label-content input__label-content--haruki">Team Number</span>
 					</label>
 				</span>
 				<button id="go" style="background-color: transparent;color: white;" class="btn go-btn">
@@ -62,53 +62,14 @@ input__label-content--haruki">Team Number</span>
 			<div class="records"></div>
 		</div>
 	</section>
-
-	<!-- <div class="blueContainer"></div> -->
-
-	<!-- <div class="credits">
-			<a id="creditLink">Coded by Anish Kachinthaya</a>
-		</div> -->
 	<div class="credits"><a id="creditLink">Coded by Anish Kachinthaya</a></div>
 
+
 	<script src="./js/teamAnalyzer.js"></script>
+
 	<script src="./network/matches.js"></script>
-	<script>
-		(function () {
-			// trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
-			if (!String.prototype.trim) {
-				(function () {
-					// Make sure we trim BOM and NBSP
-					var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-					String.prototype.trim = function () {
-						return this.replace(rtrim, "");
-					};
-				})();
-			}
-
-			[].slice
-				.call(document.querySelectorAll("input.input__field"))
-				.forEach(function (inputEl) {
-					// in case the input is already filled..
-					if (inputEl.value.trim() !== "") {
-						classie.add(inputEl.parentNode, "input--filled");
-					}
-
-					// events:
-					inputEl.addEventListener("focus", onInputFocus);
-					inputEl.addEventListener("blur", onInputBlur);
-				});
-
-			function onInputFocus(ev) {
-				classie.add(ev.target.parentNode, "input--filled");
-			}
-
-			function onInputBlur(ev) {
-				if (ev.target.value.trim() === "") {
-					classie.remove(ev.target.parentNode, "input--filled");
-				}
-			}
-		})();
-	</script>
+	<script src="./js/predictBtn.js"></script>
+	<script src="./js/inputField.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/fonts.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/barba.js/1.0.0/barba.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Match Predictor</a></li>
+            <li>
+                <a href="tournament-matches.html">Tournament Matches</a>
+            </li>
+            <li>
+                <a href="team-analyzer.html">Team Analysis</a>
+            </li>
+            <li><a href="accuracytest.html" class="current">Accuracy Test</a></li>
+        </ul>
+    </nav>
+
+    <section class="match-predictor">
+
+        <h1 id="title">GaelScout Accuracy Test</h1>
+
+        <div class="redContainer">
+            <select name="options" id="dropdown" style="color:#FF416C">
+                <option value="tourn">Completed Tournament</option>
+                <option value="team">Team</option>
+            </select>
+
+            <span class="input input--haruki" id="spanTournSKU">
+                <input class="input__field input__field--haruki" type="text" id="tournSKU" />
+                <label class="input__label input__label--haruki" for="tournSKU">
+                    <span class="input__label-content
+                    input__label-content--haruki">SKU</span>
+                </label>
+            </span>
+
+            <span class="input input--haruki" id="spanTeamNumber">
+                <input class="input__field input__field--haruki" type="text" id="teamNumber" />
+                <label class="input__label input__label--haruki" for="teamNumber">
+                    <span class="input__label-content
+                    input__label-content--haruki">Team
+                        Number</span>
+                </label>
+            </span>
+
+            <button class="btn btn-bottom" style="background-color:
+            transparent;color: white;">Test</button>
+            <div id="status"></div>
+        </div>
+    </section>
+
+    <section class="accuracy-test">
+        <h1>Test Results</h1>
+        <table>
+            <thead>
+                <th>SKU</th>
+                <th>Match Number</th>
+                <th>Red 1</th>
+                <th>Red 2</th>
+                <th>Blue 1</th>
+                <th>Blue 2</th>
+                <th>Red Prediction</th>
+                <th>Blue Prediction</th>
+                <th>Predicted Winner</th>
+                <th>Actual Winner</th>
+                <th>Success/Fail</th>
+            </thead>
+
+            <tbody id="predictionBody">
+
+            </tbody>
+        </table>
+    </section>
+
+
+    <div class="credits"><a id="creditLink">Coded by Anish Kachinthaya</a></div>
+
+
+    <script src="./network/matches.js"></script>
+    <script src="./js/predictBtn.js"></script>
+    <script src="./js/inputField.js"></script>
+    <script src="./js/accuracyTest.js"></script>
+</body>
+
+</html>

@@ -60,9 +60,6 @@
     color: #fff;
     border-radius: 5%;
     margin-bottom: 3rem;
-    -webkit-animation: movingGradient 30s ease infinite;
-    -moz-animation: movingGradient 30s ease infinite;
-    animation: movingGradient 30s ease infinite;
 }
 
 .team-analysis {
@@ -162,9 +159,6 @@ nav ul li a.current {
     border-top-left-radius: 5%;
     border-bottom-left-radius: 5%;
     clip-path: polygon(0 0, 90% 0, 100% 100%, 0 100%);
-    -webkit-animation: movingGradient 30s ease infinite;
-    -moz-animation: movingGradient 30s ease infinite;
-    animation: movingGradient 30s ease infinite;
 }
 
 .blueContainer {
@@ -178,9 +172,19 @@ nav ul li a.current {
     /* display: flex; */
     /* justify-content: center; */
     border-radius: 10%;
-    -webkit-animation: movingGradient 30s ease infinite;
-    -moz-animation: movingGradient 30s ease infinite;
-    animation: movingGradient 30s ease infinite;
+}
+
+.redContainer {
+    position: relative;
+    background: linear-gradient(to right, #FF4B2B, #FF416C);
+    /* border-radius: 5%; */
+    width: 80%;
+    height: 70vh;
+    margin: 0 auto;
+    padding: 2rem;
+    /* display: flex; */
+    /* justify-content: center; */
+    border-radius: 10%;
 }
 
 #dropdown {
@@ -196,9 +200,6 @@ nav ul li a.current {
     border-top-right-radius: 5%;
     border-bottom-right-radius: 5%;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%);
-    -webkit-animation: movingGradient 30s ease infinite;
-    -moz-animation: movingGradient 30s ease infinite;
-    animation: movingGradient 30s ease infinite;
 }
 
 #spanMatchNum,
@@ -379,6 +380,13 @@ nav ul li a.current {
     display: none;
 }
 
+.accuracy-test {
+    width: 80%;
+    margin: 0 auto;
+    padding: 2rem;
+    display: none;
+}
+
 table {
     width: 100%;
     text-align: center;
@@ -387,46 +395,4 @@ table {
 #status {
     color: #fff;
     padding: 2rem;
-}
-
-@-webkit-keyframes movingGradient {
-    0% {
-        background-position: 0% 50%
-    }
-
-    50% {
-        background-position: 100% 50%
-    }
-
-    100% {
-        background-position: 0% 50%
-    }
-}
-
-@-moz-keyframes movingGradient {
-    0% {
-        background-position: 0% 50%
-    }
-
-    50% {
-        background-position: 100% 50%
-    }
-
-    100% {
-        background-position: 0% 50%
-    }
-}
-
-@keyframes movingGradient {
-    0% {
-        background-position: 0% 50%
-    }
-
-    50% {
-        background-position: 100% 50%
-    }
-
-    100% {
-        background-position: 0% 50%
-    }
 }
