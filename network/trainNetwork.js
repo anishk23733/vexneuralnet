@@ -2,6 +2,8 @@ const axios = require("axios");
 const brain = require("brain.js");
 const fs = require("fs");
 const path = require('path');
+const stringify = require('json-stringify-safe');
+let hiddenLayers = [6];
 
 const saveTrainingData = async DATASET => {
 	let getData = await axios(
@@ -98,6 +100,112 @@ const saveTrainingData = async DATASET => {
 	);
 };
 
+let overallRandomNums = [];
+let saveRandomTrainingData = async (DATASET, ID) => {
+	let getData = await axios(
+		"https://api.vexdb.io/v1/get_matches?season=Turning Point&nodata=true"
+	);
+	let size = getData.data.size;
+	let randomNum;
+	let usedRandomNums = [];
+	let trainingData = [];
+	for (let i = 0; i < DATASET; i++) {
+		randomNum = Math.floor(Math.random() * size);
+		while (overallRandomNums.includes(randomNum)) {
+			randomNum = Math.floor(Math.random() * size);
+			console.log("Generated duplicate, fixing...")
+		}
+		overallRandomNums.push(randomNum);
+		let data = await axios(
+			`https://api.vexdb.io/v1/get_matches?season=Turning Point&limit_start=${randomNum}&limit_number=1`
+		);
+		let matchResults;
+		if (data.data.result[0].redscore > data.data.result[0].bluescore) {
+			matchResults = {
+				red: parseInt(1),
+				blue: parseInt(0)
+			};
+		} else if (
+			data.data.result[0].redscore < data.data.result[0].bluescore
+		) {
+			matchResults = {
+				red: parseInt(0),
+				blue: parseInt(1)
+			};
+		} else {
+			matchResults = {
+				red: parseInt(1),
+				blue: parseInt(1)
+			};
+		}
+
+		// let matchResults = {
+		//     red: data.data.result[i].redscore,
+		//     blue: data.data.result[i].bluescore
+		// };
+
+		let blueOne = await axios(
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
+				data.data.result[0].blue1
+			}`
+		);
+		if (blueOne.data.result[0] != undefined) {
+			blueOne = blueOne.data.result[0].vrating;
+		}
+		let blueTwo = await axios(
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
+				data.data.result[0].blue2
+			}`
+		);
+		if (blueTwo.data.result[0] != undefined) {
+			blueTwo = blueTwo.data.result[0].vrating;
+		}
+		let redOne = await axios(
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
+				data.data.result[0].red1
+			}`
+		);
+		if (redOne.data.result[0] != undefined) {
+			redOne = redOne.data.result[0].vrating;
+		}
+		let redTwo = await axios(
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
+				data.data.result[0].red2
+			}`
+		);
+		if (redTwo.data.result[0] != undefined) {
+			redTwo = redTwo.data.result[0].vrating;
+
+			trainingData.push({
+				input: {
+					red1: parseFloat(redOne),
+					red2: parseFloat(redTwo),
+					blue1: parseFloat(blueOne),
+					blue2: parseFloat(blueTwo)
+				},
+				output: matchResults
+			});
+			console.log(i + 1 + " / " + DATASET);
+		}
+	}
+	// console.log(trainingData);
+	json = stringify(trainingData);
+	// console.log(json);
+	fs.writeFile(
+		`./json/trainingData${ID}.json`,
+		json,
+		"utf8",
+		error => console.log
+	);
+}
+
+// saveRandomTrainingData(500, "1").catch(console.log);
+// saveRandomTrainingData(500, "2").catch(console.log);
+// saveRandomTrainingData(500, "3").catch(console.log);
+// saveRandomTrainingData(500, "4").catch(console.log);
+// saveRandomTrainingData(500, "5").catch(console.log);
+// saveRandomTrainingData(500, "6").catch(console.log);
+
 let processMatch = async (net, red1, red2, blue1, blue2, print = true) => {
 	let blueOne = await axios(
 		`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${blue1}`
@@ -156,7 +264,16 @@ let getModelFromTrainingData = () => {
 					trainingData = JSON.parse(data); //now it an object
 					// trainingData = JSON.stringify(obj); //convert it back to json
 					// console.log(typeof trainingData);
-					net.train(trainingData);
+					// net.train();
+					net.train(trainingData, {
+						// errorThresh: 0.05, // error threshold to reach before completion
+						// iterations: 20000, // maximum training iterations
+						log: true, // console.log() progress periodically
+						logPeriod: 10, // number of iterations between logging
+						learningRate: 0.001 // learning rate
+					});
+
+					// console.log(net.train(trainingData));
 
 					let j = net.toJSON();
 					let t = JSON.stringify(j); //brain as string
@@ -205,21 +322,17 @@ let getModelFromTrainingData = () => {
 	}
 };
 
+getModelFromTrainingData();
 
-// OPTIONS: [4] 2000 or [6] 3000
-const HIDDEN_LAYERS = [6];
-const TRAINING_SIZE = 3000;
 let loadModel = () => {
-	const net = new brain.NeuralNetwork({
-		hiddenLayers: HIDDEN_LAYERS
-	});
+	const net = new brain.NeuralNetwork();
 	let appDir = path.dirname(require.main.filename);
 	let jsonFile;
 	try {
-		jsonFile = fs.readFileSync(appDir + `/json/model${TRAINING_SIZE}.json`)
+		jsonFile = fs.readFileSync(appDir + '/json/model.json')
 	} catch (err) {
 		console.log(error);
-		jsonFile = fs.readFileSync(`./json/model${TRAINING_SIZE}.json`);
+		jsonFile = fs.readFileSync("./json/model.json");
 	}
 	const json = JSON.parse(jsonFile);
 	net.fromJSON(json);
