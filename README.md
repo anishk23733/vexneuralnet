@@ -26,7 +26,11 @@ It is currently supported on macOS. It serves five main purposes:
    GaelScout uses data based on match outcomes to create rankings for teams in a
    tournament, which are predictions for the actual rankings in the tournament.
 
-### Todos
+## Downloads
+
+GaelScout can be downloaded [here](https://bit.ly/GaelScoutDownloads).
+
+## Todos
 
 -   [x] Predict match between two alliances
 -   [x] Predict all tournament matches
