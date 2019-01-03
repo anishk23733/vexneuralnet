@@ -3,6 +3,14 @@ const brain = require("brain.js");
 const fs = require("fs");
 const path = require('path');
 
+
+// OPTIONS: [4] 2000 or [6] 3000 [6] Normalized
+const HIDDEN_LAYERS = [6];
+const TRAINING_SIZE = "Normalized";
+let normalizer = 180.05629890815;
+// const TRAINING_SIZE = "3000";
+// let normalizer = 1;
+
 const saveTrainingData = async DATASET => {
 	let getData = await axios(
 		"https://api.vexdb.io/v1/get_matches?season=Turning Point&nodata=true"
@@ -99,6 +107,7 @@ const saveTrainingData = async DATASET => {
 };
 
 let processMatch = async (net, red1, red2, blue1, blue2, print = true) => {
+	// let normalizer = 1;
 	let blueOne = await axios(
 		`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${blue1}`
 	);
@@ -118,10 +127,10 @@ let processMatch = async (net, red1, red2, blue1, blue2, print = true) => {
 		blueTwo.data.result[0] != undefined
 	) {
 		let result = net.run({
-			red1: redOne.data.result[0].vrating,
-			red2: redTwo.data.result[0].vrating,
-			blue1: blueOne.data.result[0].vrating,
-			blue2: blueTwo.data.result[0].vrating
+			red1: redOne.data.result[0].vrating / normalizer,
+			red2: redTwo.data.result[0].vrating / normalizer,
+			blue1: blueOne.data.result[0].vrating / normalizer,
+			blue2: blueTwo.data.result[0].vrating / normalizer
 		});
 		if (print) {
 			console.log(result);
@@ -206,9 +215,6 @@ let getModelFromTrainingData = () => {
 };
 
 
-// OPTIONS: [4] 2000 or [6] 3000
-const HIDDEN_LAYERS = [6];
-const TRAINING_SIZE = 3000;
 let loadModel = () => {
 	const net = new brain.NeuralNetwork({
 		hiddenLayers: HIDDEN_LAYERS
@@ -221,6 +227,7 @@ let loadModel = () => {
 		console.log(error);
 		jsonFile = fs.readFileSync(`./json/model${TRAINING_SIZE}.json`);
 	}
+
 	const json = JSON.parse(jsonFile);
 	net.fromJSON(json);
 	return net;
