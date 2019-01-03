@@ -206,7 +206,9 @@ let saveRandomTrainingData = async (DATASET, ID) => {
 // saveRandomTrainingData(500, "6").catch(console.log);
 const HIDDEN_LAYERS = [6, 3];
 let getModelFromTrainingData = () => {
-	const net = new brain.NeuralNetwork({ hiddenLayers: HIDDEN_LAYERS });
+	const net = new brain.NeuralNetwork({
+		hiddenLayers: HIDDEN_LAYERS
+	});
 	let trainingData = [];
 	fs.readFile(
 		"./json/trainingData.json",
