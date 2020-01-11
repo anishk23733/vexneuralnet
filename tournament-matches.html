@@ -11,18 +11,18 @@
     <!-- EXTERNAL LIBRARY FIXER -->
     <script>
         if (typeof module === 'object') {
-        window.module = module;
-        module = undefined;
-    }
-</script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
+            window.module = module;
+            module = undefined;
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="./js/jquery.smoothState.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <script>
         if (window.module) module = window.module;
-</script>
+    </script>
 </head>
 
 <body>
@@ -37,6 +37,8 @@
                 <li class="current"><a href="tournament-matches.html">Tournament Matches</a></li>
                 <li><a href="team-analyzer.html">Team Analysis</a></li>
                 <li><a href="accuracytest.html">Accuracy Test</a></li>
+                <li><a href="awardscheck.html">Awards Check</a></li>
+                <li><a href="thedata.html">The Data</a></li>
             </ul>
         </nav>
     </div>
@@ -45,7 +47,7 @@
 
         <h1 id="title">Tournament Matches</h1>
 
-        <div class="blueContainer">
+        <div class="redContainer">
             <span class="input input--haruki">
                 <input class="input__field input__field--haruki" type="text" id="sku" />
                 <label class="input__label input__label--haruki" for="sku">
@@ -138,6 +140,7 @@
         let getAllMatchesResults = async () => {
             let sku = document.getElementById("sku").value;
             let results = await processTournament(sku);
+
             console.log(results);
             for (let i in results) {
                 let color;
@@ -174,15 +177,16 @@
                 let color;
                 let redColor;
                 let blueColor;
-                if (results[0][i][5].red > results[0][i][5].blue) {
-                    color = 'style="color:#fff; background-color:red"';
-                    redColor = 'style="color:#fff; background-color:#7CFC00"';
-                } else if (results[0][i][5].red < results[0][i][5].blue) {
-                    color = 'style="color:#fff; background-color:blue"';
-                    blueColor = 'style="color:#fff; background-color:#7CFC00 "';
-                }
-                document.querySelector('tbody').insertAdjacentHTML('beforeend',
-                    `<tr>
+                if (results[0][i][5] != null) {
+                    if (results[0][i][5].red > results[0][i][5].blue) {
+                        color = 'style="color:#fff; background-color:red"';
+                        redColor = 'style="color:#fff; background-color:#7CFC00"';
+                    } else if (results[0][i][5].red < results[0][i][5].blue) {
+                        color = 'style="color:#fff; background-color:blue"';
+                        blueColor = 'style="color:#fff; background-color:#7CFC00 "';
+                    }
+                    document.querySelector('tbody').insertAdjacentHTML('beforeend',
+                        `<tr>
                         <td ${color}>${results[0][i][0]}</td>
                         <td ${redColor}>${results[0][i][1]}</td>
                         <td ${redColor}>${results[0][i][2]}</td>
@@ -191,7 +195,8 @@
                         <td ${blueColor}>${results[0][i][4]}</td>
                         <td>${((results[0][i][5].blue / (results[0][i][5].red+results[0][i][5].blue)) * 100).toFixed(2)}%</td>
                     </tr>`
-                )
+                    )
+                }
             }
         }
 

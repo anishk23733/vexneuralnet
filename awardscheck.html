@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>Document</title>
+	<link rel="stylesheet" href="./css/style.css" />
+	<link rel="stylesheet" href="./css/fonts.css" />
+	<!-- EXTERNAL LIBRARY FIXER -->
+	<script>
+		if (typeof module === "object") {
+			window.module = module;
+			module = undefined;
+		}
+	</script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="./js/jquery.smoothState.min.js"></script>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+		integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+	<script>
+		if (window.module) module = window.module;
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+</head>
+
+<body>
+	<div class="navigation">
+		<a href="index.html">
+			<div class="home"><i class="fas fa-home home-icon"></i></div>
+		</a>
+		<nav id="nav">
+			<ul>
+				<li><a href="match-predictor.html">Match Predictor</a></li>
+				<li>
+					<a href="tournament-matches.html">Tournament Matches</a>
+				</li>
+				<li><a href="team-analyzer.html">Team Analysis</a></li>
+				<li><a href="accuracytest.html">Accuracy Test</a></li>
+				<li class="current">
+					<a href="awardscheck.html">Awards Check</a>
+				</li>
+				<li><a href="thedata.html">The Data</a></li>
+			</ul>
+		</nav>
+	</div>
+
+	<section class="match-predictor">
+		<h1 id="title">Awards Check</h1>
+
+		<div class="blueContainer">
+			<span class="input input--haruki">
+				<input class="input__field input__field--haruki" type="text" id="sku" />
+				<label class="input__label input__label--haruki" for="sku">
+					<span class="input__label-content
+                    input__label-content--haruki">SKU</span>
+				</label>
+			</span>
+
+			<button class="btn btn-bottom">Check</button>
+			<div id="status"></div>
+		</div>
+	</section>
+
+	<section class="awards-results">
+		<h1 id="awards-title">Previous Awards</h1>
+		<div class="award-content"></div>
+	</section>
+
+	<div class="credits">
+		<a id="creditLink">Coded by Anish Kachinthaya</a>
+	</div>
+
+	<!-- <script src="./network/matches.js"></script> -->
+	<script src="./js/index.js"></script>
+	<script src="./js/predictBtn.js"></script>
+	<script src="./js/inputField.js"></script>
+	<script>
+		const axios = require("axios");
+
+		document.querySelector(".awards-results").innerHTML = "";
+
+		let mainEventListener = async () => {
+			document.querySelector(
+				".awards-results"
+			).innerHTML = ` <h1 id="awards-title">Previous Awards</h1>
+			<div class="award-content">
+
+			</div>
+			`;
+			let sku = document.getElementById("sku").value;
+			let teams = await axios(
+				`https://api.vexdb.io/v1/get_teams?sku=${sku}`
+			);
+			teams = teams.data.result;
+			let numberExcellence = 0;
+			let numberDesign = 0;
+
+			let designArray = [];
+			let excellenceArray = [];
+			let allTeamsArray = [];
+			let numberOfAwards = new Object();
+
+			for (let i in teams) {
+				numberOfAwards[teams[i].number] = {
+					Design: 0,
+					Excellence: 0
+				};
+
+				let element = teams[i];
+				allTeamsArray.push(teams[i]);
+				let awards = await axios(
+					`https://api.vexdb.io/v1/get_awards?team=${
+							element.number
+						}&season=Turning Point`
+				);
+				if (awards.data.result.length > 0) {
+					// let displayString = `<p>${element.number}: `
+					for (let i in awards.data.result) {
+						// THESE next 4 lines add the name
+						// if (i != awards.data.result.length - 1)
+						//     displayString += awards.data.result[i].name + ", ";
+						// else
+						//     displayString += awards.data.result[i].name;
+
+						// console.log(awards.data.result[i].name)
+
+						if (
+							awards.data.result[i].name ==
+							"Excellence Award (VRC/VEXU)"
+						) {
+							numberOfAwards[element.number].Design++;
+							if (!designArray.includes(element.number)) {
+								designArray.push(element.number);
+								numberExcellence++;
+							}
+						}
+						if (
+							awards.data.result[i].name ==
+							"Design Award (VRC/VEXU)"
+						) {
+							numberOfAwards[element.number].Excellence++;
+							if (!excellenceArray.includes(element.number)) {
+								numberDesign++;
+								excellenceArray.push(element.number);
+							}
+						}
+					}
+					// displayString += `</p>`;
+					// document.querySelector(".award-content").insertAdjacentHTML("beforeend", displayString)
+					// document.querySelector(".award-content").insertAdjacentHTML("beforeend", excellenceArray);
+
+					// document.querySelector(".award-content").insertAdjacentHTML("beforeend", designArray);
+				}
+			}
+
+			document.querySelector(".award-content").insertAdjacentHTML(
+				"afterbegin",
+				`<h1>Design and Excellence Winners</h1>
+			                <table id="teams_table">
+			                    <thead>
+			                        <th>Team</th>
+			                        <th>Design</th>
+			                        <th>Excellence</th>
+			                    </thead>
+			                    <tbody id="teams">
+			                    </tbody>
+			                </table>`
+			);
+
+			// let innerString = `<tr>`;
+
+			document
+				.querySelector(".award-content")
+				.insertAdjacentHTML(
+					"afterbegin",
+					`<p>Excellence Winners: ${numberExcellence}</p>`
+				);
+			document
+				.querySelector(".award-content")
+				.insertAdjacentHTML(
+					"afterbegin",
+					`<p>Design Winners: ${numberDesign}</p>`
+				);
+
+			// console.log(teams);
+
+			for (let i = 0; i < allTeamsArray.length; i++) {
+				// console.log(i);
+				console.log(allTeamsArray[i]);
+				let innerString = "";
+
+				if (
+					numberOfAwards[allTeamsArray[i].number].Design > 0 &&
+					numberOfAwards[allTeamsArray[i].number].Excellence > 0
+				) {
+					document.getElementById("teams").insertAdjacentHTML(
+						"afterbegin",
+						`<tr><td>${allTeamsArray[i].number}</td>
+									<td>${numberOfAwards[allTeamsArray[i].number].Design}</td>
+									<td>${numberOfAwards[allTeamsArray[i].number].Excellence}</td>
+									</tr>`
+					);
+				} else if (
+					numberOfAwards[allTeamsArray[i].number].Design > 0
+				) {} else if (
+					numberOfAwards[allTeamsArray[i].number].Excellence > 0
+				) {}
+
+				if (
+					designArray.includes(allTeamsArray[i].number) ||
+					excellenceArray.includes(allTeamsArray[i].number)
+				) {
+					innerString += `<tr><td>${
+							allTeamsArray[i].number
+						}</td>`;
+					if (designArray.includes(allTeamsArray[i].number)) {
+						innerString += `<td>${
+								numberOfAwards[allTeamsArray[i].number].Design
+							}</td>`;
+					} else {
+						innerString += `<td></td>`;
+					}
+					if (excellenceArray.includes(allTeamsArray[i].number)) {
+						innerString += `<td>${
+								numberOfAwards[allTeamsArray[i].number]
+									.Excellence
+							}</td>`;
+					} else {
+						innerString += `<td></td>`;
+					}
+					innerString += `</tr>`;
+				}
+
+				document
+					.getElementById("teams")
+					.insertAdjacentHTML("afterbegin", innerString);
+			}
+		};
+
+		btn.addEventListener("click", e => {
+			mainEventListener();
+		});
+		document.addEventListener("keypress", function (e) {
+			var key = e.which || e.keyCode;
+			if (key === 13) {
+				// 13 is enter
+				mainEventListener();
+			}
+		});
+	</script>
+</body>
+
+</html>

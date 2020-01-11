@@ -1,7 +1,4 @@
-const {
-	app,
-	BrowserWindow
-} = require("electron");
+const { app, BrowserWindow } = require("electron");
 const electron = require("electron");
 const path = require("path");
 const Menu = require("electron").Menu;
@@ -13,10 +10,7 @@ const Menu = require("electron").Menu;
 // electron-packager . GaelScout --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/windows/icon.ico --prune=true --out=release-builds --version-string.CompanyName=GaelForceRobotics --version-string.FileDescription=0.1 --version-string.ProductName="GaelScout"
 
 function createWindow() {
-	const {
-		width,
-		height
-	} = electron.screen.getPrimaryDisplay().workAreaSize;
+	const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
 	// Create the browser window.
 	win = new BrowserWindow({
 		width,
@@ -28,7 +22,7 @@ function createWindow() {
 
 	// and load the index.html of the app.
 	win.loadFile("index.html");
-	// win.webContents.openDevTools();
+	win.webContents.openDevTools();
 
 	win.on("closed", () => {
 		// Dereference the window object, usually you would store windows
@@ -41,7 +35,8 @@ function createWindow() {
 function createMenu() {
 	const application = {
 		label: "Application",
-		submenu: [{
+		submenu: [
+			{
 				label: "About Application",
 				selector: "orderFrontStandardAboutPanel:"
 			},
@@ -60,7 +55,8 @@ function createMenu() {
 
 	const edit = {
 		label: "Edit",
-		submenu: [{
+		submenu: [
+			{
 				label: "Undo",
 				accelerator: "CmdOrCtrl+Z",
 				selector: "undo:"

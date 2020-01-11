@@ -38,51 +38,27 @@
                 <li><a href="team-analyzer.html">Team Analysis</a></li>
                 <li><a href="accuracytest.html">Accuracy Test</a></li>
                 <li><a href="awardscheck.html">Awards Check</a></li>
-                <li><a href="thedata.html">The Data</a></li>
+                <li class="current"><a href="thedata.html">The Data</a></li>
             </ul>
         </nav>
     </div>
 
-    <section>
+    <section class="the-data">
+        <div class="title-container">
+            <h1 id="title">Team Analysis</h1>
+        </div>
         <div class="introduction">
-            <img src="./assets/img/wallpaper.png" class="intro-image">
-            <div class="title-main">
-                <h1 class="main-title">Welcome to GaelScout</h1>
-            </div>
-            <div class="introduction-container">
-                <span class="intro-text"><i class="fas fa-brain"></i> Built on
-                    Neural Networks</span>
-                <div>GaelScout uses previous records of teams and processes them
-                    with cutting edge algorithms to make predictions. The model used for its
-                    network runs on 3000 matches from the Turning Point
-                    season. This makes its match prediction results
-                    85% accurate on average—effective considering that matches do not always have systematic
-                    outcomes.</div>
-            </div>
-            <div class="introduction-container">
-                <span class="intro-text"><i class="fas fa-robot"></i> Predicts
-                    based on live data</span>
-                <div>When making predictions, GaelScout uses the VexDB API to
-                    pull live data and use this data to make predictions. This
-                    ensures utmost accuracy in prediction results.</div>
-            </div>
-            <div class="introduction-container">
-                <span class="intro-text"><i class="fas fa-code-branch"></i>
-                    Open Source</span>
-                <div>GaelScout is fully open source and can be found on GitHub.
-                    This enables other teams to make use of Gael Force Robotics'
-                    tools in competitions.</div>
-            </div>
+            <div class="graph-box">
 
+            </div>
         </div>
     </section>
 
     <div class="credits"><a id="creditLink">Coded by Anish Kachinthaya</a></div>
 
-
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./network/matches.js"></script>
-    <script src="./js/predictBtn.js"></script>
-    <script src="./js/inputField.js"></script>
+    <script src="./js/thedata.js"></script>
 </body>
 
 </html>

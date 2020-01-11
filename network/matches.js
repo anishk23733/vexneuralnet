@@ -1,8 +1,7 @@
 const axios = require("axios");
 const brain = require("brain.js");
 const fs = require("fs");
-const path = require('path');
-
+const path = require("path");
 
 // OPTIONS: [4] 2000 or [6] 3000 [6] Normalized
 const HIDDEN_LAYERS = [6];
@@ -53,33 +52,25 @@ const saveTrainingData = async DATASET => {
 		// };
 
 		let blueOne = await axios(
-			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
-				data.data.result[i].blue1
-			}`
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${data.data.result[i].blue1}`
 		);
 		if (blueOne.data.result[0] != undefined) {
 			blueOne = blueOne.data.result[0].vrating;
 		}
 		let blueTwo = await axios(
-			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
-				data.data.result[i].blue2
-			}`
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${data.data.result[i].blue2}`
 		);
 		if (blueTwo.data.result[0] != undefined) {
 			blueTwo = blueTwo.data.result[0].vrating;
 		}
 		let redOne = await axios(
-			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
-				data.data.result[i].red1
-			}`
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${data.data.result[i].red1}`
 		);
 		if (redOne.data.result[0] != undefined) {
 			redOne = redOne.data.result[0].vrating;
 		}
 		let redTwo = await axios(
-			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${
-				data.data.result[i].red2
-			}`
+			`https://api.vexdb.io/v1/get_season_rankings?season=Turning Point&team=${data.data.result[i].red2}`
 		);
 		if (redTwo.data.result[0] != undefined) {
 			redTwo = redTwo.data.result[0].vrating;
@@ -210,10 +201,8 @@ let getModelFromTrainingData = () => {
 				}
 			}
 		);
-
 	}
 };
-
 
 let loadModel = () => {
 	const net = new brain.NeuralNetwork({
@@ -222,7 +211,7 @@ let loadModel = () => {
 	let appDir = path.dirname(require.main.filename);
 	let jsonFile;
 	try {
-		jsonFile = fs.readFileSync(appDir + `/json/model${TRAINING_SIZE}.json`)
+		jsonFile = fs.readFileSync(appDir + `/json/model${TRAINING_SIZE}.json`);
 	} catch (err) {
 		console.log(error);
 		jsonFile = fs.readFileSync(`./json/model${TRAINING_SIZE}.json`);
@@ -300,17 +289,29 @@ let testTeamAccuracy = async team => {
 // 	testTeamAccuracy(teams[i]).then(() => console.log(teams[i]));
 // }
 
-
 let processTournamentMatch = async (sku, matchNum = 1) => {
 	let data;
 	let net = await loadModel();
 	data = await axios(`https://api.vexdb.io/v1/get_matches?sku=${sku}`);
 	// console.log(data.data.result[matchNum - 1].red1, data.data.result[matchNum - 1].red2, data.data.result[matchNum - 1].blue1, data.data.result[matchNum - 1].blue2);
-	let result = await processMatch(net, data.data.result[matchNum - 1].red1, data.data.result[matchNum - 1].red2, data.data.result[matchNum - 1].blue1, data.data.result[matchNum - 1].blue2);
-	return [matchNum, data.data.result[matchNum - 1].red1, data.data.result[matchNum - 1].red2, data.data.result[matchNum - 1].blue1, data.data.result[matchNum - 1].blue2, result];
-}
+	let result = await processMatch(
+		net,
+		data.data.result[matchNum - 1].red1,
+		data.data.result[matchNum - 1].red2,
+		data.data.result[matchNum - 1].blue1,
+		data.data.result[matchNum - 1].blue2
+	);
+	return [
+		matchNum,
+		data.data.result[matchNum - 1].red1,
+		data.data.result[matchNum - 1].red2,
+		data.data.result[matchNum - 1].blue1,
+		data.data.result[matchNum - 1].blue2,
+		result
+	];
+};
 
-let testTournamentAccuracy = async (sku) => {
+let testTournamentAccuracy = async sku => {
 	let data;
 	let net = await loadModel();
 	let numMatches = 0;
@@ -319,20 +320,31 @@ let testTournamentAccuracy = async (sku) => {
 	data = await axios(`https://api.vexdb.io/v1/get_matches?sku=${sku}`);
 	let prediction;
 	for (let i in data.data.result) {
-		prediction = await processMatch(net, data.data.result[i].red1, data.data.result[i].red2, data.data.result[i].blue1, data.data.result[i].blue2, false);
+		prediction = await processMatch(
+			net,
+			data.data.result[i].red1,
+			data.data.result[i].red2,
+			data.data.result[i].blue1,
+			data.data.result[i].blue2,
+			false
+		);
 		numMatches++;
-		if (data.data.result[i].redscore > data.data.result[i].bluescore && prediction['red'] > prediction['blue']) {
+		if (
+			data.data.result[i].redscore > data.data.result[i].bluescore &&
+			prediction["red"] > prediction["blue"]
+		) {
 			numAccurate++;
-		} else if (data.data.result[i].redscore < data.data.result[i].bluescore && prediction['red'] < prediction['blue']) {
+		} else if (
+			data.data.result[i].redscore < data.data.result[i].bluescore &&
+			prediction["red"] < prediction["blue"]
+		) {
 			numAccurate++;
 		}
 	}
-	console.log(
-		"Overall accuracy: " + (numAccurate / numMatches) * 100 + "%"
-	);
-}
+	console.log("Overall accuracy: " + (numAccurate / numMatches) * 100 + "%");
+};
 
-let processTournament = async (sku) => {
+let processTournament = async sku => {
 	let data;
 	let net = await loadModel();
 	let predictions = [];
@@ -341,18 +353,34 @@ let processTournament = async (sku) => {
 		let prediction;
 		for (let i in data.data.result) {
 			let j = parseInt(i) + 1;
-			prediction = await processMatch(net, data.data.result[i].red1, data.data.result[i].red2, data.data.result[i].blue1, data.data.result[i].blue2, false);
-			predictions.push([data.data.result[i].matchnum, data.data.result[i].red1, data.data.result[i].red2, data.data.result[i].blue1, data.data.result[i].blue2, prediction]);
-			document.getElementById("status").innerText = `Processing ${j} of ${data.data.result.length}...`;
+			prediction = await processMatch(
+				net,
+				data.data.result[i].red1,
+				data.data.result[i].red2,
+				data.data.result[i].blue1,
+				data.data.result[i].blue2,
+				false
+			);
+			predictions.push([
+				data.data.result[i].matchnum,
+				data.data.result[i].red1,
+				data.data.result[i].red2,
+				data.data.result[i].blue1,
+				data.data.result[i].blue2,
+				prediction
+			]);
+			document.getElementById(
+				"status"
+			).innerText = `Processing ${j} of ${data.data.result.length}...`;
 			// console.log(predictions);
 		}
 		document.getElementById("status").innerText = ``;
 		return predictions;
 	}
 	return null;
-}
-let processRanking = async (sku) => {
-	document.getElementById("rankingsTable").innerHTML = '';
+};
+let processRanking = async sku => {
+	document.getElementById("rankingsTable").innerHTML = "";
 
 	let data;
 	let net = await loadModel();
@@ -364,14 +392,23 @@ let processRanking = async (sku) => {
 		losses[teamData.data.result[i].number] = 0;
 	}
 	// for (let i in teamData.data.results)
-	console.log(teamData)
+	console.log(teamData);
 	data = await axios(`https://api.vexdb.io/v1/get_matches?sku=${sku}`);
 	if (data.data.result != null) {
 		let prediction;
 		for (let i in data.data.result) {
 			let j = parseInt(i) + 1;
-			prediction = await processMatch(net, data.data.result[i].red1, data.data.result[i].red2, data.data.result[i].blue1, data.data.result[i].blue2, false);
-			document.getElementById("status").innerText = `Processing ${j} of ${data.data.result.length} matches...`;
+			prediction = await processMatch(
+				net,
+				data.data.result[i].red1,
+				data.data.result[i].red2,
+				data.data.result[i].blue1,
+				data.data.result[i].blue2,
+				false
+			);
+			document.getElementById(
+				"status"
+			).innerText = `Processing ${j} of ${data.data.result.length} matches...`;
 			if (prediction.red > prediction.blue) {
 				wins[data.data.result[i].red1]++;
 				wins[data.data.result[i].red2]++;
@@ -389,12 +426,21 @@ let processRanking = async (sku) => {
 		for (var team in wins) {
 			sortable.push([team, wins[team]]);
 		}
-		sortable.sort(function (a, b) {
+		sortable.sort(function(a, b) {
 			return b[1] - a[1];
 		});
 
 		for (let i in sortable) {
-			document.getElementById("rankingsTable").insertAdjacentHTML('beforeend', `<tr><td>${parseInt(i)+1}</td><td>${sortable[i][0]}</td><td>${wins[sortable[i][0]]}</td><td>${losses[sortable[i][0]]}</td></tr>`)
+			document
+				.getElementById("rankingsTable")
+				.insertAdjacentHTML(
+					"beforeend",
+					`<tr><td>${parseInt(i) + 1}</td><td>${
+						sortable[i][0]
+					}</td><td>${wins[sortable[i][0]]}</td><td>${
+						losses[sortable[i][0]]
+					}</td></tr>`
+				);
 		}
 		console.log(sortable);
 		console.log(wins);
@@ -402,31 +448,60 @@ let processRanking = async (sku) => {
 		document.getElementById("status").innerText = ``;
 	}
 	return null;
-}
+};
 let processTeamMatches = async (sku, team) => {
 	let data;
 	let net = await loadModel();
 	let predictions = [];
-	data = await axios(`https://api.vexdb.io/v1/get_matches?sku=${sku}&team=${team}`);
-	console.log(data);
+	data = await axios(
+		`https://api.vexdb.io/v1/get_matches?sku=${sku}&team=${team}`
+	);
+	// console.log(data);
 	if (data.data.result != null) {
 		let prediction;
 		let numWon = 0;
 		let numPlayed = 0;
 		for (let i in data.data.result) {
+			// console.log(data.data.result[i])
+
+			// console.log(data.data.result[i]);
 			let j = parseInt(i) + 1;
 			numPlayed++;
-			prediction = await processMatch(net, data.data.result[i].red1, data.data.result[i].red2, data.data.result[i].blue1, data.data.result[i].blue2, false);
-			predictions.push([data.data.result[i].matchnum, data.data.result[i].red1, data.data.result[i].red2, data.data.result[i].blue1, data.data.result[i].blue2, prediction]);
-			document.getElementById("status").innerText = `Processing ${j} of ${data.data.result.length}...`;
-
-			if (team == data.data.result[i].red1 || team == data.data.result[i].red2) {
-				if (prediction.red > prediction.blue) {
-					numWon++;
-				}
-			} else if (team == data.data.result[i].blue1 || team == data.data.result[i].blue2) {
-				if (prediction.blue > prediction.red) {
-					numWon++;
+			prediction = await processMatch(
+				net,
+				data.data.result[i].red1,
+				data.data.result[i].red2,
+				data.data.result[i].blue1,
+				data.data.result[i].blue2,
+				false
+			);
+			predictions.push([
+				data.data.result[i].matchnum,
+				data.data.result[i].red1,
+				data.data.result[i].red2,
+				data.data.result[i].blue1,
+				data.data.result[i].blue2,
+				prediction
+			]);
+			document.getElementById(
+				"status"
+			).innerText = `Processing ${j} of ${data.data.result.length}...`;
+			// console.log(prediction);
+			if (prediction != null) {
+				if (
+					team == data.data.result[i].red1 ||
+					team == data.data.result[i].red2
+				) {
+					if (prediction.red > prediction.blue) {
+						numWon++;
+					}
+				} else if (
+					team == data.data.result[i].blue1 ||
+					team == data.data.result[i].blue2
+				) {
+					if (prediction.blue > prediction.red) {
+						numWon++;
+					}
 				}
 			}
 			// console.log(predictions);
@@ -435,7 +510,7 @@ let processTeamMatches = async (sku, team) => {
 		return [predictions, numWon, numPlayed];
 	}
 	return null;
-}
+};
 
 // let main = async () => {
 // 	testTournamentAccuracy("RE-VRC-18-6170");
