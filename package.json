@@ -21,7 +21,7 @@
     "electron": "^4.0.0"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "brain.js": "^1.6.1",
     "chart.js": "^2.7.3",
     "fs": "0.0.1-security",
