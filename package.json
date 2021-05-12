@@ -23,7 +23,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "brain.js": "^1.6.1",
-    "chart.js": "^2.7.3",
+    "chart.js": "^2.9.4",
     "fs": "0.0.1-security",
     "json-stringify-safe": "^5.0.1"
   }
